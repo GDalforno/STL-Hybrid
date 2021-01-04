@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.metrics import mean_absolute_error
+import pandas as pd
 
 
 def pocid(y_test:np.ndarray, y_pred:np.ndarray)->float:
@@ -8,4 +8,10 @@ def pocid(y_test:np.ndarray, y_pred:np.ndarray)->float:
     for i in range(1, h):
         d += 1 if (y_test[i]-y_test[i-1])*(y_pred[i]-y_pred[i-1]) > 0 else 0
     return d/h
+
+def multi_criteria(model_metrics:pd.Series)->float:
+    a, b, c = model_metrics
+    c = 1-c
+    S = np.sin(2*np.pi/3)
+    return S/2*(a*b + a*c + b*c)
 

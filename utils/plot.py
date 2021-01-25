@@ -1,16 +1,21 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
 import numpy as np
 from statsmodels.tsa.seasonal import STL
 from statsmodels.tsa.seasonal import DecomposeResult
 from statsmodels.graphics.tsaplots import plot_acf
 
 
-def plot(data:np.ndarray, title:str)->None:
+def plot(data:list, title:str)->None:
+    training, testing = data[0], data[1]
+    n_train, n_test = len(training), len(testing)
     plt.figure(figsize=(13, 5))
     plt.title(title)
-    plt.plot(data, color="blue")
+    plt.plot(training, color="blue", label="training data")
+    plt.plot(np.arange(n_train, n_train+n_test), testing, color="cornflowerblue", label="testing data")
     plt.grid()
-    plt.xticks(np.arange(0, len(data), 12))
+    plt.legend()
+    plt.xticks(np.arange(0, n_train+n_test, 12))
     plt.xlabel("Time")
     plt.ylabel("Y")
     plt.show()
@@ -24,10 +29,10 @@ def plot_stl(data:np.ndarray)->DecomposeResult:
     axs[0].plot(res.trend, color="blue")
     axs[0].grid()
     axs[1].set_title("Seasonal")
-    axs[1].plot(res.seasonal, color="red")
+    axs[1].plot(res.seasonal, color="royalblue")
     axs[1].grid()
     axs[2].set_title("Residual")
-    axs[2].plot(res.resid, color="black")
+    axs[2].plot(res.resid, color="darkblue")
     axs[2].grid()
     plt.xticks(np.arange(0, len(data), 12))
     plt.show()
@@ -40,13 +45,9 @@ def acf(data:np.ndarray)->None:
     _=plot_acf(data)
     plt.grid()
 
-
-def plot_predictions(y_test:np.ndarray, y_pred:np.ndarray, model:str)->None:
-    plt.plot(y_test, label="Testing", color="blue")
-    plt.plot(y_pred, label=model, color="red")
+    
+def plot_dist(data:np.ndarray)->None:
+    plt.title("Residuals")
+    sns.histplot(data, bins=25, kde=True)
     plt.grid()
-    plt.xlabel("Time")
-    plt.ylabel("Y")
-    plt.legend()
     plt.show()
-
